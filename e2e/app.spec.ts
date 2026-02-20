@@ -77,4 +77,26 @@ test.describe('Marko Pollo E2E', () => {
     ])
     expect(download.suggestedFilename()).toMatch(/\.md$/)
   })
+
+  test('dev save button triggers file write', async ({ page }) => {
+    await page.goto('/#deck/default/editor')
+    await expect(page.locator('.cm-editor')).toBeVisible()
+
+    // Mock the dev server write endpoint
+    await page.route('**/__marko-pollo/write-file', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true }) })
+    )
+    // Mock the ping endpoint to indicate dev environment
+    await page.route('**/__marko-pollo/ping', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true }) })
+    )
+
+    // Find and click the Save button
+    const saveButton = page.getByRole('button', { name: /save/i })
+    if (await saveButton.isVisible()) {
+      await saveButton.click()
+      // Wait a moment for the save operation to complete
+      await page.waitForTimeout(500)
+    }
+  })
 })

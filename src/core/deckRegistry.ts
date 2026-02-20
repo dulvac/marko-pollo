@@ -29,22 +29,24 @@ function countSlides(markdown: string): number {
 }
 
 export function buildRegistry(files: Record<string, string>): DeckEntry[] {
-  return Object.entries(files)
-    .map(([filePath, rawMarkdown]) => {
-      const match = filePath.match(/\/presentations\/([^/]+)\/slides\.md$/)
-      if (!match) return null
-      const id = match[1]
-      const { title, author } = extractTitle(rawMarkdown)
-      return {
-        id,
-        title: title || id,
-        author,
-        slideCount: countSlides(rawMarkdown),
-        rawMarkdown,
-      }
+  const entries: DeckEntry[] = []
+
+  for (const [filePath, rawMarkdown] of Object.entries(files)) {
+    const match = filePath.match(/\/presentations\/([^/]+)\/slides\.md$/)
+    if (!match) continue
+
+    const id = match[1]
+    const { title, author } = extractTitle(rawMarkdown)
+    entries.push({
+      id,
+      title: title || id,
+      author,
+      slideCount: countSlides(rawMarkdown),
+      rawMarkdown,
     })
-    .filter((entry): entry is DeckEntry => entry !== null)
-    .sort((a, b) => a.id.localeCompare(b.id))
+  }
+
+  return entries.sort((a, b) => a.id.localeCompare(b.id))
 }
 
 // Build-time glob — Vite resolves this at compile time

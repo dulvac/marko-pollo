@@ -7,8 +7,8 @@ import {
 } from './core/store'
 import { createKeyboardHandler } from './core/keyboard'
 import { useRoute } from './core/route'
-import { deckRegistry, getDeck } from './core/deckRegistry'
-import { loadDeck, migrateOldStorage, saveDeckDraft } from './core/loader'
+import { deckRegistry } from './core/deckRegistry'
+import { loadDeck, migrateOldStorage } from './core/loader'
 import { useFileDrop } from './core/hooks'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { exportMarkdown } from './core/exporter'
@@ -46,6 +46,7 @@ export default function App() {
       // Deck not found, redirect to picker
       setRoute({ view: 'picker' })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.view === 'picker' ? null : route.deckId, route.view])
 
   // Global Ctrl+S / Cmd+S save shortcut (separate from createKeyboardHandler, so it works inside CodeMirror)

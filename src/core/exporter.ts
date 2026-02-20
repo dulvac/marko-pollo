@@ -30,15 +30,38 @@ export function downloadMarkdown(
   return true
 }
 
+interface FileSystemWritableFileStream {
+  write(data: string): Promise<void>
+  close(): Promise<void>
+}
+
+interface FileSystemFileHandle {
+  createWritable(): Promise<FileSystemWritableFileStream>
+}
+
+interface ShowSaveFilePickerOptions {
+  suggestedName?: string
+  types?: Array<{
+    description: string
+    accept: Record<string, string[]>
+  }>
+}
+
+declare global {
+  interface Window {
+    showSaveFilePicker?: (options?: ShowSaveFilePickerOptions) => Promise<FileSystemFileHandle>
+  }
+}
+
 export async function saveMarkdownToFile(
   markdown: string,
   title?: string,
   deckId?: string
 ): Promise<boolean> {
-  if (!('showSaveFilePicker' in window)) return false
+  if (!window.showSaveFilePicker) return false
 
   try {
-    const handle = await (window as any).showSaveFilePicker({
+    const handle = await window.showSaveFilePicker({
       suggestedName: `${deckId || (title ? slugify(title) : 'presentation')}.md`,
       types: [{ description: 'Markdown', accept: { 'text/markdown': ['.md'] } }],
     })
@@ -46,8 +69,8 @@ export async function saveMarkdownToFile(
     await writable.write(markdown)
     await writable.close()
     return true
-  } catch (err: any) {
-    if (err?.name === 'AbortError') return false // user cancelled
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') return false // user cancelled
     return false
   }
 }

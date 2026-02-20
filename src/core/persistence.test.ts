@@ -16,21 +16,21 @@ describe('detectEnvironment', () => {
   })
 
   it('returns dev when DEV and ping succeeds', async () => {
-    vi.stubEnv('DEV', 'true')
+    vi.stubEnv('DEV', true)
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true }))
     const { detectEnvironment } = await import('./persistence')
     expect(await detectEnvironment()).toBe('dev')
   })
 
   it('returns unknown when DEV but ping 404s', async () => {
-    vi.stubEnv('DEV', 'true')
+    vi.stubEnv('DEV', true)
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }))
     const { detectEnvironment } = await import('./persistence')
     expect(await detectEnvironment()).toBe('unknown')
   })
 
   it('returns github-pages when not DEV and URL matches pattern', async () => {
-    vi.stubEnv('DEV', '')
+    vi.stubEnv('DEV', false)
     const mockLocation = {
       hostname: 'user.github.io',
       pathname: '/repo/',
@@ -45,7 +45,7 @@ describe('detectEnvironment', () => {
   })
 
   it('returns unknown when not DEV and URL does not match', async () => {
-    vi.stubEnv('DEV', 'false')
+    vi.stubEnv('DEV', false)
     vi.stubGlobal('location', { hostname: 'example.com', pathname: '/' })
     const { detectEnvironment } = await import('./persistence')
     expect(await detectEnvironment()).toBe('unknown')

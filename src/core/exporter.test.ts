@@ -45,8 +45,8 @@ describe('downloadMarkdown', () => {
       style: {},
     } as unknown as HTMLAnchorElement)
 
-    vi.spyOn(document.body, 'appendChild').mockImplementation(appendChildSpy)
-    vi.spyOn(document.body, 'removeChild').mockImplementation(removeChildSpy)
+    vi.spyOn(document.body, 'appendChild').mockImplementation(appendChildSpy as (node: Node) => Node)
+    vi.spyOn(document.body, 'removeChild').mockImplementation(removeChildSpy as (child: Node) => Node)
   })
 
   it('creates a blob with text/markdown type', () => {

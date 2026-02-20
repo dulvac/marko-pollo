@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildRegistry, type DeckEntry } from './deckRegistry'
+import { buildRegistry } from './deckRegistry'
 
 describe('buildRegistry', () => {
   const mockFiles: Record<string, string> = {

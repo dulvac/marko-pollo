@@ -55,3 +55,15 @@ This project uses a team of specialized agents. See `.claude/agents/` for their 
 - **Sage** (Security) - Vulnerability review, security scanning, input sanitization
 - **Turing** (QA/Infra) - Testing, CI/CD, deployment, end-to-end verification
 - **Eliza** (AI-native) - Claude Code instrumentation, agents, skills, hooks optimization
+
+## Team Workflow
+
+**Always delegate implementation tasks to the appropriate agent.** The team lead coordinates and dispatches work but should not write application code directly. Use the agents for their specialties:
+
+- **Code changes** (features, bug fixes, refactoring): Dispatch to **Rex**
+- **Architecture decisions and code reviews**: Dispatch to **Ada**
+- **Security reviews and vulnerability fixes**: Dispatch to **Sage**
+- **Testing, CI, infrastructure**: Dispatch to **Turing**
+- **Agent/skill/hook configuration, AI journal updates**: Dispatch to **Eliza**
+
+After reviewers identify issues, dispatch Rex (or the relevant specialist) to implement the fixes -- do not fix them yourself. Rex should also review code changes before they are committed to verify React patterns, component quality, and visual fidelity.

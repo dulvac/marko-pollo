@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useCallback, useState } from 'react'
+import { useReducer, useEffect, useCallback, useState, lazy, Suspense } from 'react'
 import {
   slideReducer,
   initialState,
@@ -7,10 +7,11 @@ import {
 } from './core/store'
 import { createKeyboardHandler } from './core/keyboard'
 import { loadMarkdown, saveToLocalStorage } from './core/loader'
-import { PresentationView } from './views/PresentationView'
-import { EditorView } from './views/EditorView'
-import { OverviewGrid } from './views/OverviewGrid'
 import { ErrorBoundary } from './components/ErrorBoundary'
+
+const PresentationView = lazy(() => import('./views/PresentationView').then(m => ({ default: m.PresentationView })))
+const EditorView = lazy(() => import('./views/EditorView').then(m => ({ default: m.EditorView })))
+const OverviewGrid = lazy(() => import('./views/OverviewGrid').then(m => ({ default: m.OverviewGrid })))
 
 type View = 'presentation' | 'editor' | 'overview'
 
@@ -129,11 +130,13 @@ export default function App() {
     <ErrorBoundary>
       <SlideContext.Provider value={state}>
         <SlideDispatchContext.Provider value={dispatch}>
-          {view === 'presentation' && <PresentationView />}
-          {view === 'editor' && <EditorView />}
-          {view === 'overview' && (
-            <OverviewGrid onSelectSlide={handleSelectSlide} />
-          )}
+          <Suspense fallback={<div style={{ background: '#0B0D17', width: '100vw', height: '100vh' }} />}>
+            {view === 'presentation' && <PresentationView />}
+            {view === 'editor' && <EditorView />}
+            {view === 'overview' && (
+              <OverviewGrid onSelectSlide={handleSelectSlide} />
+            )}
+          </Suspense>
         </SlideDispatchContext.Provider>
       </SlideContext.Provider>
     </ErrorBoundary>

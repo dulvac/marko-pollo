@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState, useId } from 'react'
-import mermaid from 'mermaid'
 import styles from '../styles/slides.module.css'
 
+let mermaidInstance: typeof import('mermaid').default | null = null
 let mermaidInitialized = false
 
-function initMermaid() {
-  if (mermaidInitialized) return
+async function initMermaid() {
+  if (mermaidInitialized) return mermaidInstance!
+
+  const mermaid = await import('mermaid').then(m => m.default)
+  mermaidInstance = mermaid
+
   mermaid.initialize({
     startOnLoad: false,
     securityLevel: 'strict',
@@ -27,6 +31,7 @@ function initMermaid() {
     sequence: { useMaxWidth: true },
   })
   mermaidInitialized = true
+  return mermaid
 }
 
 interface MermaidDiagramProps {
@@ -39,11 +44,11 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
   const id = useId()
 
   useEffect(() => {
-    initMermaid()
     let cancelled = false
 
     async function renderDiagram() {
       try {
+        const mermaid = await initMermaid()
         const safeId = `mermaid-${id.replace(/:/g, '-')}`
         const { svg } = await mermaid.render(safeId, chart)
         if (!cancelled && containerRef.current) {

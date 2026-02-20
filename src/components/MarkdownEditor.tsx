@@ -1,8 +1,9 @@
-import { useCallback } from 'react'
-import CodeMirror from '@uiw/react-codemirror'
+import { useCallback, lazy, Suspense } from 'react'
 import { markdown } from '@codemirror/lang-markdown'
 import { EditorView } from '@codemirror/view'
 import styles from '../styles/editor.module.css'
+
+const CodeMirror = lazy(() => import('@uiw/react-codemirror'))
 
 const editorTheme = EditorView.theme(
   {
@@ -56,13 +57,15 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
 
   return (
     <div className={styles.editor}>
-      <CodeMirror
-        value={value}
-        height="100%"
-        extensions={[markdown(), editorTheme]}
-        onChange={handleChange}
-        theme="none"
-      />
+      <Suspense fallback={<div style={{ background: '#0B0D17', width: '100%', height: '100%' }} />}>
+        <CodeMirror
+          value={value}
+          height="100%"
+          extensions={[markdown(), editorTheme]}
+          onChange={handleChange}
+          theme="none"
+        />
+      </Suspense>
     </div>
   )
 }

@@ -1,0 +1,24 @@
+.editorView {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-color: var(--mp-bg);
+}
+
+.editorPane {
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  border-right: 1px solid rgba(107, 115, 148, 0.2);
+}
+
+.previewPane {
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.editor {
+  width: 100%;
+  height: 100%;
+}

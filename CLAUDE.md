@@ -35,6 +35,16 @@ Three views: PresentationView (`/#/{n}`), EditorView (`/#/edit`), OverviewGrid (
 - Prefer named exports
 - No light mode - dark theme is the brand identity
 
+## Quality Standards
+
+- **Functional Testing**: Unit and E2E tests must pass (Vitest + Playwright)
+- **Visual Testing**: UI must be visually inspected and match design specifications
+  - Passing tests (e.g., "26/26 PASS") only verify functionality, NOT visual quality
+  - Layout, padding, margins, proportions must be manually verified against design doc
+  - Screenshots should be taken during E2E testing to verify visual correctness
+  - Rex must visually verify all UI changes before declaring work complete
+  - Turing must include visual inspection as part of E2E verification
+
 ## Brand Colors
 
 | Role | Hex |
@@ -85,7 +95,9 @@ Your ONLY responsibilities as team lead are:
 
 - **Testing and E2E verification**: **ALWAYS dispatch Turing**
   - Unit tests, integration tests, Playwright E2E tests, CI/CD
+  - Visual UX testing: screenshots, layout verification, design spec compliance
   - Manual testing workflows, deployment verification
+  - CRITICAL: E2E tests must include visual inspection, not just functional checks
 
 - **AI instrumentation** (CLAUDE.md, agents, skills, hooks): **ALWAYS dispatch Eliza**
   - Agent definitions, custom commands, AI journal updates

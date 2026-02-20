@@ -1,0 +1,40 @@
+:root {
+  /* Colors */
+  --mp-bg: #0B0D17;
+  --mp-surface: #141829;
+  --mp-primary: #6C5CE7;
+  --mp-secondary: #00CEC9;
+  --mp-text: #E8E8F0;
+  --mp-muted: #6B7394;
+  --mp-success: #00E676;
+  --mp-danger: #FF5252;
+  --mp-code-bg: #1A1E2E;
+
+  /* Typography */
+  --mp-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --mp-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Sizes (at 1920x1080 logical resolution) */
+  --mp-title-size: 72px;
+  --mp-subtitle-size: 44px;
+  --mp-body-size: 28px;
+  --mp-bullet-size: 26px;
+  --mp-code-size: 22px;
+  --mp-inline-code-size: 24px;
+  --mp-counter-size: 16px;
+
+  /* Spacing */
+  --mp-slide-padding: 80px;
+  --mp-content-gap: 24px;
+
+  /* Transitions */
+  --mp-transition-duration: 200ms;
+  --mp-transition-ease: ease-out;
+
+  /* Radii */
+  --mp-radius-code: 12px;
+  --mp-radius-image: 8px;
+
+  /* Gradient */
+  --mp-gradient: linear-gradient(135deg, var(--mp-primary), var(--mp-secondary));
+}

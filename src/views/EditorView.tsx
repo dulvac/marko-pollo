@@ -4,13 +4,13 @@ import { MarkdownEditor } from '../components/MarkdownEditor'
 import { SlideFrame } from '../components/SlideFrame'
 import { SlideRenderer } from '../components/SlideRenderer'
 import { SlideNavigation } from '../components/SlideNavigation'
-import { saveToLocalStorage } from '../core/loader'
+import { saveDeckDraft } from '../core/loader'
 import styles from '../styles/editor.module.css'
 
 const DEBOUNCE_MS = 300
 
 export function EditorView() {
-  const { rawMarkdown, slides, currentIndex } = useSlides()
+  const { rawMarkdown, slides, currentIndex, currentDeck } = useSlides()
   const dispatch = useSlideDispatch()
   const [localMarkdown, setLocalMarkdown] = useState(rawMarkdown)
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
@@ -31,10 +31,12 @@ export function EditorView() {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
         dispatch({ type: 'SET_MARKDOWN', markdown: value })
-        saveToLocalStorage(value)
+        if (currentDeck) {
+          saveDeckDraft(currentDeck, value)
+        }
       }, DEBOUNCE_MS)
     },
-    [dispatch]
+    [dispatch, currentDeck]
   )
 
   // Guard against out-of-bounds access

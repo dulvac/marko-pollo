@@ -216,6 +216,70 @@ fe35698 - feat: add remark-slides plugin, markdown parser, and slide store
 
 ---
 
+## 2026-02-20 — Code Splitting & CI/CD Pipeline
+
+**What happened:** Phase 4 focused on production readiness: aggressive code splitting to reduce initial bundle size, and GitHub Actions CI/CD pipeline setup. This was the smoothest phase yet — the team delegation pattern is now well-established.
+
+**Agents involved:**
+- **Rex (frontend specialist)** — Implemented lazy loading for views, vendor chunking for heavy libraries (Mermaid, Shiki, CodeMirror), and dynamic imports throughout the application
+- **Turing (QA & infrastructure)** — Created GitHub Actions pipeline with build and test jobs on push/PR to main/master branches
+- **Team lead (Marco)** — Coordinated work and handled commits as usual
+
+**Code splitting results:**
+
+**Before optimization:**
+- Initial bundle: 1,860 KB
+- Gzipped: 557 KB
+
+**After optimization:**
+- Initial bundle: 537 KB (71% reduction)
+- Gzipped: 144 KB (74% reduction)
+
+**Techniques applied:**
+1. **Lazy-loaded views** — All three views (PresentationView, OverviewGrid, EditorView) wrapped with `React.lazy()` and `Suspense` boundaries. Users only load the view they're currently using.
+2. **Vendor chunking** — Split heavy libraries into separate chunks: `mermaid.js`, `shiki`, and `codemirror` bundles load on-demand when features are actually used.
+3. **Dynamic imports** — Parser utilities, highlighter initialization, and Mermaid configuration all use dynamic imports to defer loading until needed.
+
+**Why this works particularly well for Marko Pollo:** The application has distinct usage modes with non-overlapping dependencies:
+- **Presentation mode** — Users navigating slides don't need CodeMirror (editor) or Mermaid (until a diagram slide appears)
+- **Editor mode** — Users editing markdown don't need Shiki syntax highlighting until they insert a code block
+- **Overview mode** — Thumbnail grid doesn't need full rendering capabilities until user clicks a slide
+
+Result: Each mode loads only what it needs, dramatically reducing initial load time.
+
+**CI/CD pipeline created:**
+- File: `.github/workflows/ci.yml`
+- Triggers: Push and pull requests to `main` and `master` branches
+- Jobs: Build verification + test suite execution
+- Node version: 18.x
+- Steps: Checkout, setup Node, install deps, run tests, run build
+
+**Challenges:** None. This phase went exceptionally smoothly compared to earlier phases.
+
+**Reflection on team delegation:**
+
+This phase was a perfect example of the delegation pattern working as intended:
+- Team lead identified what needed to be done (code splitting + CI/CD)
+- Rex was dispatched for the code work (lazy loading, chunking, dynamic imports)
+- Turing was dispatched for the infrastructure work (GitHub Actions pipeline)
+- Team lead coordinated and committed the changes
+
+**Contrast with earlier phases:**
+- **Phase 1-2:** Team lead was corrected multiple times for doing implementation work directly instead of delegating to specialists
+- **Phase 3:** Team lead attempted to run Playwright tests himself instead of dispatching Turing
+- **Phase 4:** No corrections needed. Team lead stayed in coordinator role, specialists handled their domains
+
+**Key insight:** When the team lead respects the boundaries and lets specialists do specialized work, the workflow is efficient and friction-free. The pattern is now internalized.
+
+**Commits:**
+```
+[commit hash pending] - feat: add code splitting and CI/CD pipeline
+```
+
+**Outcome:** Production bundle is now 71% smaller, GitHub Actions pipeline runs on every push, and the team delegation pattern is operating smoothly without intervention or correction.
+
+---
+
 ## AI-Native Project Structure
 
 ```

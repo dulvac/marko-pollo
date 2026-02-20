@@ -11,6 +11,7 @@ import { deckRegistry, getDeck } from './core/deckRegistry'
 import { loadDeck, migrateOldStorage, saveDeckDraft } from './core/loader'
 import { useFileDrop } from './core/hooks'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { exportMarkdown } from './core/exporter'
 
 const PresentationView = lazy(() => import('./views/PresentationView').then(m => ({ default: m.PresentationView })))
 const EditorView = lazy(() => import('./views/EditorView').then(m => ({ default: m.EditorView })))
@@ -46,6 +47,20 @@ export default function App() {
       setRoute({ view: 'picker' })
     }
   }, [route.view === 'picker' ? null : route.deckId, route.view])
+
+  // Global Ctrl+S / Cmd+S save shortcut (separate from createKeyboardHandler, so it works inside CodeMirror)
+  useEffect(() => {
+    if (route.view === 'picker' || !state.rawMarkdown) return
+
+    const handleSave = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault()
+        exportMarkdown(state.rawMarkdown, state.deckMetadata?.title, state.currentDeck ?? undefined)
+      }
+    }
+    window.addEventListener('keydown', handleSave)
+    return () => window.removeEventListener('keydown', handleSave)
+  }, [state.rawMarkdown, state.deckMetadata?.title, state.currentDeck, route.view])
 
   // Keyboard handler
   useEffect(() => {

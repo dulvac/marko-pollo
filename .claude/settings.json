@@ -5,6 +5,8 @@
       "Bash(npm run build)",
       "Bash(npm run dev)",
       "Bash(npx vitest run*)",
+      "Bash(npx playwright*)",
+      "Bash(npx tsc*)",
       "Bash(npm audit)",
       "Bash(git status*)",
       "Bash(git log*)",

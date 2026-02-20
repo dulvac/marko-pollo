@@ -102,3 +102,17 @@ After an agent completes their task:
 4. **Then**: Move to next task or report completion to user
 
 Remember: You are a conductor, not a musician. Let the specialists play their instruments.
+
+## Idle Agent Cleanup
+
+Stale agents waste resources and clutter the team roster. Follow these rules to keep the team clean.
+
+1. **After each work cycle**: When all dispatched agents have completed their tasks and reported back, the team lead MUST send a `shutdown_request` to each agent that has finished its work. Do not leave completed agents idle.
+
+2. **Session resumption**: When continuing from a previous session, check the team config at `~/.claude/teams/marko-pollo/config.json` for stale members with `isActive: false`. Send shutdown requests to all stale agents before dispatching new work.
+
+3. **Agent naming**: When dispatching new instances of the same role (e.g., Ada doing a second review), use descriptive suffixes (e.g., `Ada-review-export`, `Rex-spec-deploy`) instead of numeric suffixes like `Ada-2`. This keeps the team roster readable at a glance.
+
+4. **Max concurrent agents**: Keep active agent count at 5 or fewer unless parallel work explicitly requires more. Exceeding this without a clear reason is a sign of poor coordination.
+
+5. **Cleanup before commit**: Before committing work at the end of a task cycle, ensure all agents that contributed are shut down cleanly. A clean shutdown confirms the agent's work is complete and logged.

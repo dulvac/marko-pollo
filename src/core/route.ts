@@ -1,3 +1,5 @@
+import { useState, useEffect, useCallback, useRef } from 'react'
+
 export type Route =
   | { view: 'picker' }
   | { view: 'presentation'; deckId: string; slideIndex: number }
@@ -31,4 +33,29 @@ export function routeToHash(route: Route): string {
   if (route.view === 'picker') return ''
   if (route.view === 'presentation') return `deck/${route.deckId}/${route.slideIndex}`
   return `deck/${route.deckId}/${route.view}`
+}
+
+export function useRoute(): [Route, (route: Route) => void] {
+  const [route, setRouteState] = useState<Route>(() => hashToRoute(window.location.hash))
+  const isInternalPush = useRef(false)
+
+  const setRoute = useCallback((newRoute: Route) => {
+    isInternalPush.current = true
+    const hash = routeToHash(newRoute)
+    window.location.hash = hash ? `#${hash}` : ''
+    setRouteState(newRoute)
+    // Reset after the current microtask so the hashchange handler skips
+    queueMicrotask(() => { isInternalPush.current = false })
+  }, [])
+
+  useEffect(() => {
+    function onHashChange() {
+      if (isInternalPush.current) return // cycle guard
+      setRouteState(hashToRoute(window.location.hash))
+    }
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
+  return [route, setRoute]
 }

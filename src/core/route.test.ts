@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { hashToRoute, routeToHash, type Route } from './route'
+import { describe, it, expect, afterEach } from 'vitest'
+import { renderHook, act } from '@testing-library/react'
+import { hashToRoute, routeToHash, useRoute, type Route } from './route'
 
 describe('hashToRoute', () => {
   it('empty hash -> picker', () => {
@@ -85,4 +86,39 @@ describe('round-trip', () => {
       expect(parsed).toEqual(route)
     })
   }
+})
+
+describe('useRoute', () => {
+  afterEach(() => { window.location.hash = '' })
+
+  it('returns picker for empty hash', () => {
+    window.location.hash = ''
+    const { result } = renderHook(() => useRoute())
+    expect(result.current[0]).toEqual({ view: 'picker' })
+  })
+
+  it('parses initial hash', () => {
+    window.location.hash = '#deck/test/2'
+    const { result } = renderHook(() => useRoute())
+    expect(result.current[0]).toEqual({
+      view: 'presentation', deckId: 'test', slideIndex: 2,
+    })
+  })
+
+  it('updates hash when setRoute is called', () => {
+    const { result } = renderHook(() => useRoute())
+    act(() => {
+      result.current[1]({ view: 'editor', deckId: 'foo' })
+    })
+    expect(window.location.hash).toBe('#deck/foo/editor')
+  })
+
+  it('responds to external hashchange', async () => {
+    const { result } = renderHook(() => useRoute())
+    act(() => {
+      window.location.hash = '#deck/bar/overview'
+      window.dispatchEvent(new HashChangeEvent('hashchange'))
+    })
+    expect(result.current[0]).toEqual({ view: 'overview', deckId: 'bar' })
+  })
 })

@@ -99,4 +99,65 @@ test.describe('Marko Pollo E2E', () => {
       await page.waitForTimeout(500)
     }
   })
+
+  test('editor edits persist to localStorage across reload', async ({ page }) => {
+    await page.goto('/#deck/default/editor')
+    await expect(page.locator('.cm-editor')).toBeVisible()
+
+    // Type into the CodeMirror editor
+    const editor = page.locator('.cm-content')
+    await editor.click()
+    await page.keyboard.press('Control+a')
+    await page.keyboard.type('# Persisted Slide')
+
+    // Wait for debounce to save to localStorage
+    await page.waitForTimeout(500)
+
+    // Verify localStorage has the draft
+    const stored = await page.evaluate(() =>
+      localStorage.getItem('marko-pollo-deck-default')
+    )
+    expect(stored).toContain('# Persisted Slide')
+
+    // Reload the page and navigate back to editor
+    await page.goto('/#deck/default/editor')
+    await expect(page.locator('.cm-editor')).toBeVisible()
+
+    // Verify the persisted content is loaded
+    const editorText = await page.locator('.cm-content').textContent()
+    expect(editorText).toContain('Persisted Slide')
+  })
+
+  test('Ctrl+S works from overview view', async ({ page }) => {
+    await page.goto('/#deck/default/overview')
+    // Wait for overview to render slide thumbnails
+    await page.waitForTimeout(300)
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.keyboard.press('Control+s'),
+    ])
+    expect(download.suggestedFilename()).toMatch(/\.md$/)
+  })
+
+  test('export button in editor triggers download', async ({ page }) => {
+    await page.goto('/#deck/default/editor')
+    await expect(page.locator('.cm-editor')).toBeVisible()
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByRole('button', { name: /export/i }).click(),
+    ])
+    expect(download.suggestedFilename()).toMatch(/\.md$/)
+  })
+
+  test('picker shows all presentations from presentations/ folder', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.getByRole('heading', { name: 'marko pollo' })).toBeVisible()
+
+    // There should be at least 4 decks (default, architecture-patterns, getting-started, intro-to-typescript)
+    const buttons = page.getByRole('button')
+    const count = await buttons.count()
+    expect(count).toBeGreaterThanOrEqual(4)
+  })
 })

@@ -31,7 +31,9 @@ export async function getDefaultBranch(
   repo: string,
   token: string
 ): Promise<string> {
-  const response = await githubFetch(`${API_BASE}/repos/${owner}/${repo}`, token)
+  const o = encodeURIComponent(owner)
+  const r = encodeURIComponent(repo)
+  const response = await githubFetch(`${API_BASE}/repos/${o}/${r}`, token)
   const data = await response.json()
   return data.default_branch
 }
@@ -43,8 +45,11 @@ export async function getFileContents(
   ref: string,
   token: string
 ): Promise<{ sha: string; content: string }> {
+  const o = encodeURIComponent(owner)
+  const r = encodeURIComponent(repo)
+  const encodedPath = path.split('/').map(encodeURIComponent).join('/')
   const response = await githubFetch(
-    `${API_BASE}/repos/${owner}/${repo}/contents/${path}?ref=${ref}`,
+    `${API_BASE}/repos/${o}/${r}/contents/${encodedPath}?ref=${encodeURIComponent(ref)}`,
     token
   )
   const data = await response.json()
@@ -57,8 +62,11 @@ export async function getBranchHead(
   branch: string,
   token: string
 ): Promise<string> {
+  const o = encodeURIComponent(owner)
+  const r = encodeURIComponent(repo)
+  const encodedBranch = branch.split('/').map(encodeURIComponent).join('/')
   const response = await githubFetch(
-    `${API_BASE}/repos/${owner}/${repo}/git/ref/heads/${branch}`,
+    `${API_BASE}/repos/${o}/${r}/git/ref/heads/${encodedBranch}`,
     token
   )
   const data = await response.json()
@@ -72,7 +80,9 @@ export async function createBranch(
   sha: string,
   token: string
 ): Promise<void> {
-  await githubFetch(`${API_BASE}/repos/${owner}/${repo}/git/refs`, token, {
+  const o = encodeURIComponent(owner)
+  const r = encodeURIComponent(repo)
+  await githubFetch(`${API_BASE}/repos/${o}/${r}/git/refs`, token, {
     method: 'POST',
     body: JSON.stringify({
       ref: `refs/heads/${branchName}`,
@@ -91,7 +101,10 @@ export async function updateFileContents(
   branch: string,
   token: string
 ): Promise<void> {
-  await githubFetch(`${API_BASE}/repos/${owner}/${repo}/contents/${path}`, token, {
+  const o = encodeURIComponent(owner)
+  const r = encodeURIComponent(repo)
+  const encodedPath = path.split('/').map(encodeURIComponent).join('/')
+  await githubFetch(`${API_BASE}/repos/${o}/${r}/contents/${encodedPath}`, token, {
     method: 'PUT',
     body: JSON.stringify({
       message,
@@ -111,7 +124,9 @@ export async function createPullRequest(
   base: string,
   token: string
 ): Promise<{ url: string; number: number }> {
-  const response = await githubFetch(`${API_BASE}/repos/${owner}/${repo}/pulls`, token, {
+  const o = encodeURIComponent(owner)
+  const r = encodeURIComponent(repo)
+  const response = await githubFetch(`${API_BASE}/repos/${o}/${r}/pulls`, token, {
     method: 'POST',
     body: JSON.stringify({
       title,

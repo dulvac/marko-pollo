@@ -11,7 +11,7 @@ export function GitHubAuthModal({ onAuthorize, onCancel }: GitHubAuthModalProps)
   const [remember, setRemember] = useState(false)
   const [showToken, setShowToken] = useState(false)
 
-  const isValidToken = token.startsWith('ghp_')
+  const isValidToken = token.startsWith('ghp_') || token.startsWith('github_pat_')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

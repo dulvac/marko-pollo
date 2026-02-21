@@ -69,7 +69,7 @@ describe('downloadMarkdown', () => {
     expect(anchor.download).toBe('presentation.md')
   })
 
-  it('prefers deckId for filename when provided', () => {
+  it('prefers slugified deckId for filename when provided', () => {
     downloadMarkdown('# Hello', undefined, 'rust-talk')
     const anchor = (document.createElement as ReturnType<typeof vi.fn>).mock.results[0].value
     expect(anchor.download).toBe('rust-talk.md')

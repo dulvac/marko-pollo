@@ -16,7 +16,7 @@ export function downloadMarkdown(
 ): boolean {
   if (!markdown.trim()) return false
 
-  const filename = `${deckId || (title ? slugify(title) : 'presentation')}.md`
+  const filename = `${deckId ? slugify(deckId) : (title ? slugify(title) : 'presentation')}.md`
   const blob = new Blob([markdown], { type: 'text/markdown' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -62,7 +62,7 @@ export async function saveMarkdownToFile(
 
   try {
     const handle = await window.showSaveFilePicker({
-      suggestedName: `${deckId || (title ? slugify(title) : 'presentation')}.md`,
+      suggestedName: `${deckId ? slugify(deckId) : (title ? slugify(title) : 'presentation')}.md`,
       types: [{ description: 'Markdown', accept: { 'text/markdown': ['.md'] } }],
     })
     const writable = await handle.createWritable()

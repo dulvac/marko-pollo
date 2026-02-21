@@ -66,7 +66,7 @@ describe('GitHubAuthModal', () => {
     expect(authorizeBtn).toBeDisabled()
   })
 
-  it('disables Authorize button when token does not start with ghp_', async () => {
+  it('disables Authorize button when token does not start with ghp_ or github_pat_', async () => {
     render(<GitHubAuthModal onAuthorize={vi.fn()} onCancel={vi.fn()} />)
     const input = screen.getByLabelText(/github token/i)
     await userEvent.type(input, 'invalid_token')
@@ -78,6 +78,14 @@ describe('GitHubAuthModal', () => {
     render(<GitHubAuthModal onAuthorize={vi.fn()} onCancel={vi.fn()} />)
     const input = screen.getByLabelText(/github token/i)
     await userEvent.type(input, 'ghp_validtoken')
+    const authorizeBtn = screen.getByRole('button', { name: /authorize/i })
+    expect(authorizeBtn).not.toBeDisabled()
+  })
+
+  it('enables Authorize button when token starts with github_pat_', async () => {
+    render(<GitHubAuthModal onAuthorize={vi.fn()} onCancel={vi.fn()} />)
+    const input = screen.getByLabelText(/github token/i)
+    await userEvent.type(input, 'github_pat_validtoken')
     const authorizeBtn = screen.getByRole('button', { name: /authorize/i })
     expect(authorizeBtn).not.toBeDisabled()
   })

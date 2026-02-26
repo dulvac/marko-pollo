@@ -52,7 +52,7 @@
 .subtitle {
   font-size: var(--mp-subtitle-size);
   font-weight: 500;
-  color: var(--mp-muted);
+  color: #A89878;
   line-height: 1.3;
 }
 

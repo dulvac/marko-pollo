@@ -1,12 +1,12 @@
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import remarkGfm from 'remark-gfm'
-import remarkEmoji from 'remark-emoji'
-import { remarkSlides, type SlideNode, type SlideMetadata } from './plugins/remark-slides'
-import type { Root, RootContent } from 'mdast'
+export interface SlideMetadata {
+  bg?: string
+  class?: string
+  layout?: string
+  transition?: string
+  [key: string]: string | undefined
+}
 
 export interface SlideData {
-  children: RootContent[]
   metadata: SlideMetadata
   rawContent: string
 }
@@ -24,6 +24,17 @@ export interface ParseResult {
   deckMetadata: DeckMetadata
 }
 
+const DANGEROUS_KEYS = ['__proto__', 'constructor', 'prototype']
+
+/**
+ * Matches a single line that is a markdown thematic break:
+ * 3+ of the same character (-, *, _), optionally with spaces between,
+ * and nothing else on the line.
+ */
+const THEMATIC_BREAK_LINE = /^\s*(?:(-\s*){3,}|(\*\s*){3,}|(_\s*){3,})\s*$/
+
+const COMMENT_DIRECTIVE_PATTERN = /^<!--\s*(\w+)\s*:\s*(.+?)\s*-->$/
+
 function extractFrontmatter(markdown: string): {
   deckMetadata: DeckMetadata
   body: string
@@ -33,7 +44,6 @@ function extractFrontmatter(markdown: string): {
 
   const deckMetadata: DeckMetadata = {}
   const lines = match[1].split('\n')
-  const dangerousKeys = ['__proto__', 'constructor', 'prototype']
   let hasValidKeyValue = false
 
   for (const line of lines) {
@@ -43,7 +53,7 @@ function extractFrontmatter(markdown: string): {
       const value = line.slice(colonIndex + 1).trim()
 
       // Skip dangerous keys that could cause prototype pollution
-      if (dangerousKeys.includes(key)) {
+      if (DANGEROUS_KEYS.includes(key)) {
         continue
       }
 
@@ -61,11 +71,65 @@ function extractFrontmatter(markdown: string): {
   return { deckMetadata, body }
 }
 
-const processor = unified()
-  .use(remarkParse)
-  .use(remarkGfm)
-  .use(remarkEmoji)
-  .use(remarkSlides)
+function extractSlideMetadata(content: string): {
+  metadata: SlideMetadata
+  rawContent: string
+} {
+  const metadata: SlideMetadata = {}
+  const lines = content.split('\n')
+  let contentStartLine = 0
+
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trim()
+
+    // Skip empty lines at the beginning
+    if (trimmed === '') {
+      contentStartLine = i + 1
+      continue
+    }
+
+    // Check for HTML comment directives
+    const match = trimmed.match(COMMENT_DIRECTIVE_PATTERN)
+    if (match) {
+      if (!DANGEROUS_KEYS.includes(match[1])) {
+        metadata[match[1]] = match[2]
+      }
+      contentStartLine = i + 1
+      continue
+    }
+
+    // Non-empty, non-directive line -- stop scanning
+    break
+  }
+
+  const rawContent = lines.slice(contentStartLine).join('\n').trim()
+  return { metadata, rawContent: rawContent || content.trim() }
+}
+
+/**
+ * Split the body text into raw slide strings by detecting thematic break lines.
+ * A thematic break is a line containing only 3+ of -, *, or _ (with optional spaces).
+ */
+function splitSlides(body: string): string[] {
+  const lines = body.split('\n')
+  const chunks: string[] = []
+  let currentLines: string[] = []
+
+  for (const line of lines) {
+    if (THEMATIC_BREAK_LINE.test(line)) {
+      // Thematic break found -- finalize the current chunk
+      chunks.push(currentLines.join('\n'))
+      currentLines = []
+    } else {
+      currentLines.push(line)
+    }
+  }
+
+  // Push the remaining lines as the last chunk
+  chunks.push(currentLines.join('\n'))
+
+  return chunks
+}
 
 export function parseMarkdown(markdown: string): ParseResult {
   if (!markdown.trim()) {
@@ -78,21 +142,16 @@ export function parseMarkdown(markdown: string): ParseResult {
     return { slides: [], deckMetadata }
   }
 
-  const tree = processor.runSync(processor.parse(body)) as Root
+  const rawSlides = splitSlides(body)
 
-  const slides: SlideData[] = (tree.children as unknown as SlideNode[]).map(
-    (node) => {
-      const startOffset = node.data?.startOffset ?? 0
-      const endOffset = node.data?.endOffset ?? body.length
-      const rawContent = body.slice(startOffset, endOffset).trim()
+  const slides: SlideData[] = []
+  for (const raw of rawSlides) {
+    const trimmed = raw.trim()
+    if (!trimmed) continue
 
-      return {
-        children: node.children as RootContent[],
-        metadata: node.data?.metadata ?? {},
-        rawContent,
-      }
-    }
-  )
+    const { metadata, rawContent } = extractSlideMetadata(trimmed)
+    slides.push({ metadata, rawContent })
+  }
 
   return { slides, deckMetadata }
 }

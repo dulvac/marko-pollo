@@ -27,17 +27,14 @@ describe('OverviewGrid', () => {
       rawMarkdown: '# Slide 1\n---\n# Slide 2\n---\n# Slide 3',
       slides: [
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 1',
         },
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 2',
         },
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 3',
         },
@@ -63,12 +60,10 @@ describe('OverviewGrid', () => {
       rawMarkdown: '# Slide 1\n---\n# Slide 2',
       slides: [
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 1',
         },
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 2',
         },
@@ -97,17 +92,14 @@ describe('OverviewGrid', () => {
       rawMarkdown: '# Slide 1\n---\n# Slide 2\n---\n# Slide 3',
       slides: [
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 1',
         },
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 2',
         },
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 3',
         },
@@ -138,12 +130,10 @@ describe('OverviewGrid', () => {
       rawMarkdown: '# Slide 1\n---\n# Slide 2',
       slides: [
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 1',
         },
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 2',
         },

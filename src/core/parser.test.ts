@@ -98,10 +98,73 @@ describe('parseMarkdown', () => {
     const md = '---\nJust some text\nNo colons here\n---\n\n# Slide 2'
     const result = parseMarkdown(md)
     expect(result.deckMetadata).toEqual({})
-    // The text between --- markers becomes a setext heading, resulting in 1 slide
-    // with both the setext heading and the h1 heading
-    expect(result.slides).toHaveLength(1)
+    // With string-based splitting, --- lines are always slide separators.
+    // The rejected frontmatter block produces: empty (before first ---),
+    // "Just some text\nNo colons here" (between ---), and "# Slide 2" (after second ---).
+    // Empty chunks are discarded, yielding 2 slides.
+    expect(result.slides).toHaveLength(2)
     expect(result.slides[0].rawContent).toContain('Just some text')
-    expect(result.slides[0].rawContent).toContain('Slide 2')
+    expect(result.slides[1].rawContent).toContain('Slide 2')
+  })
+
+  it('does not include children field in SlideData (no double parsing)', () => {
+    const result = parseMarkdown('# Hello World')
+    expect(result.slides[0]).toHaveProperty('rawContent')
+    expect(result.slides[0]).toHaveProperty('metadata')
+    expect(result.slides[0]).not.toHaveProperty('children')
+  })
+
+  it('filters prototype pollution keys from slide metadata', () => {
+    const md = '<!-- __proto__: polluted -->\n<!-- constructor: evil -->\n<!-- bg: #ff0000 -->\n\n# Safe Slide'
+    const result = parseMarkdown(md)
+    expect(result.slides[0].metadata.bg).toBe('#ff0000')
+    expect(result.slides[0].metadata).not.toHaveProperty('__proto__')
+    expect(result.slides[0].metadata).not.toHaveProperty('constructor')
+  })
+
+  it('filters prototype pollution keys from deck metadata', () => {
+    const md = '---\ntitle: My Talk\n__proto__: polluted\nprototype: evil\n---\n\n# Slide'
+    const result = parseMarkdown(md)
+    expect(result.deckMetadata.title).toBe('My Talk')
+    expect(result.deckMetadata).not.toHaveProperty('__proto__')
+    expect(result.deckMetadata).not.toHaveProperty('prototype')
+  })
+
+  it('does not split on GFM table separator rows', () => {
+    const md = '| Col A | Col B |\n|-------|-------|\n| 1     | 2     |'
+    const result = parseMarkdown(md)
+    expect(result.slides).toHaveLength(1)
+    expect(result.slides[0].rawContent).toContain('Col A')
+    expect(result.slides[0].rawContent).toContain('1')
+  })
+
+  it('handles slide with only metadata comment', () => {
+    const md = '<!-- bg: #000 -->'
+    const result = parseMarkdown(md)
+    expect(result.slides).toHaveLength(1)
+    expect(result.slides[0].metadata.bg).toBe('#000')
+  })
+
+  it('handles --- without surrounding blank lines as separator', () => {
+    const md = '# Slide 1\n---\n# Slide 2'
+    const result = parseMarkdown(md)
+    expect(result.slides).toHaveLength(2)
+    expect(result.slides[0].rawContent).toContain('# Slide 1')
+    expect(result.slides[1].rawContent).toContain('# Slide 2')
+  })
+
+  it('handles only whitespace markdown', () => {
+    const result = parseMarkdown('   \n  \n   ')
+    expect(result.slides).toHaveLength(0)
+    expect(result.deckMetadata).toEqual({})
+  })
+
+  it('extracts multiple metadata directives per slide', () => {
+    const md = '<!-- bg: #ff0000 -->\n<!-- class: centered -->\n<!-- layout: two-column -->\n\n# Styled Slide'
+    const result = parseMarkdown(md)
+    expect(result.slides[0].metadata.bg).toBe('#ff0000')
+    expect(result.slides[0].metadata.class).toBe('centered')
+    expect(result.slides[0].metadata.layout).toBe('two-column')
+    expect(result.slides[0].rawContent).toContain('# Styled Slide')
   })
 })

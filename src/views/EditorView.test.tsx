@@ -46,7 +46,6 @@ describe('EditorView', () => {
       rawMarkdown: '# Test',
       slides: [
         {
-          children: [],
           metadata: {},
           rawContent: '# Test',
         },
@@ -90,12 +89,10 @@ describe('EditorView', () => {
       rawMarkdown: '# Slide 1\n---\n# Slide 2',
       slides: [
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 1',
         },
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 2',
         },

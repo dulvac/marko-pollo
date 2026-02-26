@@ -40,7 +40,6 @@ describe('PresentationView', () => {
       rawMarkdown: '# Test Slide',
       slides: [
         {
-          children: [],
           metadata: {},
           rawContent: '# Test Slide',
         },
@@ -61,12 +60,10 @@ describe('PresentationView', () => {
       rawMarkdown: '# Slide 1\n---\n# Slide 2',
       slides: [
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 1',
         },
         {
-          children: [],
           metadata: {},
           rawContent: '# Slide 2',
         },
@@ -87,12 +84,10 @@ describe('PresentationView', () => {
       rawMarkdown: '# First Slide\n---\n# Second Slide',
       slides: [
         {
-          children: [],
           metadata: {},
           rawContent: '# First Slide',
         },
         {
-          children: [],
           metadata: {},
           rawContent: '# Second Slide',
         },

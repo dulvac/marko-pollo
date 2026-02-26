@@ -26,10 +26,11 @@
 .exportBtn {
   padding: 6px 12px;
   background-color: var(--mp-primary);
-  color: var(--mp-text);
+  color: var(--mp-bg);
   border: none;
   border-radius: 4px;
   font-size: 14px;
+  font-weight: 600;
   font-family: var(--mp-font-body);
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -57,10 +58,11 @@
 .saveBtn {
   padding: 6px 12px;
   background-color: var(--mp-primary);
-  color: var(--mp-text);
+  color: var(--mp-bg);
   border: none;
   border-radius: 4px;
   font-size: 14px;
+  font-weight: 600;
   font-family: var(--mp-font-body);
   cursor: pointer;
   transition: opacity 0.2s ease;

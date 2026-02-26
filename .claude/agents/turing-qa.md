@@ -70,7 +70,7 @@ When performing visual UX testing:
 - [ ] Is all content fully visible without clipping or overflow?
 - [ ] Do slide frames fill the viewport correctly?
 - [ ] Are split-pane proportions appropriate (e.g., 50/50 or 60/40)?
-- [ ] Are brand colors (#0B0D17, #141829, #6C5CE7, #00CEC9, #E8E8F0, #6B7394) used correctly?
+- [ ] Are brand colors (#322D2B, #2E3B30, #E4C56C, #1C6331, #F0E8D8, #8A7D5A) used correctly?
 - [ ] Is typography (font sizes, line heights, weights) matching the spec?
 - [ ] Does the UI work at different viewport sizes?
 - [ ] Have you documented visual issues with screenshot evidence?

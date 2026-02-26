@@ -63,12 +63,12 @@ Worktree directory: `.worktrees/` (project-local, hidden). Feature branches are 
 
 | Role | Hex |
 |------|-----|
-| Background | #0B0D17 |
-| Surface | #141829 |
-| Primary (purple) | #6C5CE7 |
-| Secondary (teal) | #00CEC9 |
-| Text | #E8E8F0 |
-| Muted | #6B7394 |
+| Background | #322D2B |
+| Surface | #2E3B30 |
+| Primary (gold) | #E4C56C |
+| Secondary (green) | #1C6331 |
+| Text | #F0E8D8 |
+| Muted | #8A7D5A |
 
 ## Team
 

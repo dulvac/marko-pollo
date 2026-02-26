@@ -81,7 +81,7 @@
   height: 8px;
   border-radius: 50%;
   background-color: var(--mp-primary);
-  box-shadow: 0 0 8px rgba(108, 92, 231, 0.4);
+  box-shadow: 0 0 8px rgba(228, 197, 108, 0.4);
 }
 
 .orderedList {
@@ -213,7 +213,7 @@
 }
 
 .tableHeader {
-  background: rgba(108, 92, 231, 0.15);
+  background: rgba(228, 197, 108, 0.15);
   font-weight: 700;
   border-bottom: 3px solid var(--mp-primary);
 }
@@ -221,12 +221,12 @@
 .tableHeaderCell {
   padding: 16px 20px;
   text-align: left;
-  border: 1px solid rgba(107, 115, 148, 0.2);
+  border: 1px solid rgba(138, 125, 90, 0.2);
 }
 
 .tableCell {
   padding: 14px 20px;
-  border: 1px solid rgba(107, 115, 148, 0.2);
+  border: 1px solid rgba(138, 125, 90, 0.2);
 }
 
 .tableRow:nth-child(even) .tableCell {

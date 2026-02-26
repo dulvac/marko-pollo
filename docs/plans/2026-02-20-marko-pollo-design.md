@@ -303,15 +303,15 @@ Dark, cinematic, developer-native. Slides should feel like a polished keynote at
 
 | Role | Hex | Usage |
 |------|-----|-------|
-| Background | #0B0D17 | Page/app background |
-| Surface | #141829 | Slide background |
-| Primary | #6C5CE7 | Accent, titles, highlights |
-| Secondary | #00CEC9 | Links, secondary accents |
-| Text | #E8E8F0 | Body text |
-| Muted | #6B7394 | Subtitles, metadata |
-| Success | #00E676 | Code diff additions |
-| Danger | #FF5252 | Code diff removals |
-| Code BG | #1A1E2E | Code block background |
+| Background | #322D2B | Page/app background |
+| Surface | #2E3B30 | Slide background |
+| Primary | #E4C56C | Accent, titles, highlights |
+| Secondary | #1C6331 | Links, secondary accents |
+| Text | #F0E8D8 | Body text |
+| Muted | #8A7D5A | Subtitles, metadata |
+| Success | #4CAF50 | Code diff additions |
+| Danger | #D4533B | Code diff removals |
+| Code BG | #263029 | Code block background |
 
 ### Typography
 
@@ -327,18 +327,18 @@ Dark, cinematic, developer-native. Slides should feel like a polished keynote at
 
 ### Distinctive Visual Elements
 
-- **Title accent:** Short gradient underline (purple -> teal) beneath h1 titles
-- **Bullet points:** Small filled circles in primary purple with subtle glow; left border accent that fades vertically
+- **Title accent:** Short gradient underline (gold -> green) beneath h1 titles
+- **Bullet points:** Small filled circles in primary gold with subtle glow; left border accent that fades vertically
 - **Code blocks:** Rounded corners (12px), subtle box shadow, thin top border in primary gradient, language label top-right
-- **Mermaid diagrams:** Base theme with brand purple/teal overrides
+- **Mermaid diagrams:** Base theme with brand gold/green overrides
 - **Images:** Rounded corners (8px), soft drop shadow
-- **Progress bar:** 3px gradient bar (purple -> teal) at bottom of screen
+- **Progress bar:** 3px gradient bar (gold -> green) at bottom of screen
 - **Slide transitions:** Horizontal slide + opacity fade (200ms ease-out)
 
 ### Editor View
 
 - Same dark palette with custom CodeMirror theme
-- Markdown syntax highlighting uses muted brand colors (purple for headings, teal for links)
+- Markdown syntax highlighting uses muted brand colors (gold for headings, green for links)
 - Thin vertical divider between editor and preview
 
 ## Keyboard Navigation

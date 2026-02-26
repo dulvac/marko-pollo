@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(11, 13, 23, 0.9);
+  background-color: rgba(50, 45, 43, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,7 +13,7 @@
 
 .modalContent {
   background-color: var(--mp-surface);
-  border: 1px solid rgba(107, 115, 148, 0.3);
+  border: 1px solid rgba(138, 125, 90, 0.3);
   border-radius: 8px;
   padding: 32px;
   max-width: 480px;
@@ -74,7 +74,7 @@
   width: 100%;
   padding: 10px 60px 10px 12px;
   background-color: var(--mp-code-bg);
-  border: 1px solid rgba(107, 115, 148, 0.3);
+  border: 1px solid rgba(138, 125, 90, 0.3);
   border-radius: 4px;
   color: var(--mp-text);
   font-size: 14px;
@@ -96,7 +96,7 @@
   right: 8px;
   padding: 4px 8px;
   background-color: transparent;
-  border: 1px solid rgba(107, 115, 148, 0.3);
+  border: 1px solid rgba(138, 125, 90, 0.3);
   border-radius: 3px;
   color: var(--mp-muted);
   font-size: 12px;
@@ -106,7 +106,7 @@
 }
 
 .revealBtn:hover {
-  background-color: rgba(107, 115, 148, 0.1);
+  background-color: rgba(138, 125, 90, 0.1);
   color: var(--mp-text);
 }
 
@@ -151,7 +151,7 @@
 .cancelBtn {
   padding: 8px 16px;
   background-color: transparent;
-  border: 1px solid rgba(107, 115, 148, 0.3);
+  border: 1px solid rgba(138, 125, 90, 0.3);
   border-radius: 4px;
   color: var(--mp-text);
   font-size: 14px;
@@ -161,7 +161,7 @@
 }
 
 .cancelBtn:hover {
-  background-color: rgba(107, 115, 148, 0.1);
+  background-color: rgba(138, 125, 90, 0.1);
 }
 
 .authorizeBtn {

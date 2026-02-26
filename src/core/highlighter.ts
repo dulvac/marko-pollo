@@ -19,7 +19,7 @@ const COMMON_LANGS = [
 function getHighlighter(): Promise<Highlighter> {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
-      themes: ['github-dark'],
+      themes: ['vitesse-dark'],
       langs: COMMON_LANGS,
     })
   }
@@ -38,7 +38,7 @@ export async function highlightCode(
 
   return highlighter.codeToHtml(code, {
     lang: resolvedLang,
-    theme: 'github-dark',
+    theme: 'vitesse-dark',
     meta: meta ? { __raw: meta } : undefined,
     transformers: [
       transformerNotationDiff(),

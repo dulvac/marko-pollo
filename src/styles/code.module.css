@@ -62,15 +62,15 @@
 }
 
 :global(.shiki .line.diff.add) {
-  background-color: rgba(0, 230, 118, 0.15);
+  background-color: rgba(76, 175, 80, 0.15);
 }
 
 :global(.shiki .line.diff.remove) {
-  background-color: rgba(255, 82, 82, 0.15);
+  background-color: rgba(212, 83, 59, 0.15);
 }
 
 :global(.shiki .line.highlighted) {
-  background-color: rgba(108, 92, 231, 0.15);
+  background-color: rgba(228, 197, 108, 0.15);
 }
 
 :global(.shiki.has-focused .line:not(.focused)) {
@@ -83,9 +83,9 @@
 }
 
 :global(.shiki .line.highlighted.error) {
-  background-color: rgba(255, 82, 82, 0.15);
+  background-color: rgba(212, 83, 59, 0.15);
 }
 
 :global(.shiki .line.highlighted.warning) {
-  background-color: rgba(255, 193, 7, 0.15);
+  background-color: rgba(228, 197, 108, 0.15);
 }

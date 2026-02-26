@@ -1,14 +1,14 @@
 :root {
   /* Colors */
-  --mp-bg: #0B0D17;
-  --mp-surface: #141829;
-  --mp-primary: #6C5CE7;
-  --mp-secondary: #00CEC9;
-  --mp-text: #E8E8F0;
-  --mp-muted: #6B7394;
-  --mp-success: #00E676;
-  --mp-danger: #FF5252;
-  --mp-code-bg: #1A1E2E;
+  --mp-bg: #322D2B;
+  --mp-surface: #2E3B30;
+  --mp-primary: #E4C56C;
+  --mp-secondary: #1C6331;
+  --mp-text: #F0E8D8;
+  --mp-muted: #8A7D5A;
+  --mp-success: #4CAF50;
+  --mp-danger: #D4533B;
+  --mp-code-bg: #263029;
 
   /* Typography */
   --mp-font-body: 'Inter', system-ui, -apple-system, sans-serif;

@@ -8,34 +8,34 @@ const CodeMirror = lazy(() => import('@uiw/react-codemirror'))
 const editorTheme = EditorView.theme(
   {
     '&': {
-      backgroundColor: '#0B0D17',
-      color: '#E8E8F0',
+      backgroundColor: '#322D2B',
+      color: '#F0E8D8',
       height: '100%',
     },
     '.cm-content': {
-      caretColor: '#6C5CE7',
+      caretColor: '#E4C56C',
       fontFamily: "'JetBrains Mono', monospace",
       fontSize: '15px',
       lineHeight: '1.6',
       padding: '24px',
     },
     '.cm-activeLine': {
-      backgroundColor: 'rgba(108, 92, 231, 0.05)',
+      backgroundColor: 'rgba(228, 197, 108, 0.05)',
     },
     '.cm-gutters': {
-      backgroundColor: '#0B0D17',
-      color: '#6B7394',
+      backgroundColor: '#322D2B',
+      color: '#8A7D5A',
       border: 'none',
       paddingLeft: '8px',
     },
     '.cm-activeLineGutter': {
-      backgroundColor: 'rgba(108, 92, 231, 0.1)',
+      backgroundColor: 'rgba(228, 197, 108, 0.1)',
     },
     '&.cm-focused .cm-selectionBackground, ::selection': {
-      backgroundColor: 'rgba(108, 92, 231, 0.3)',
+      backgroundColor: 'rgba(228, 197, 108, 0.3)',
     },
     '.cm-cursor': {
-      borderLeftColor: '#6C5CE7',
+      borderLeftColor: '#E4C56C',
       borderLeftWidth: '2px',
     },
   },

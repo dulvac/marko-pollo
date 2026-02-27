@@ -95,7 +95,7 @@
 
 .prLink {
   font-size: 13px;
-  color: var(--mp-secondary);
+  color: var(--mp-primary);
   font-family: var(--mp-font-body);
   text-decoration: underline;
   cursor: pointer;

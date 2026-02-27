@@ -240,14 +240,14 @@
 /* Links */
 
 .link {
-  color: var(--mp-secondary);
+  color: var(--mp-primary);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color var(--mp-transition-duration) var(--mp-transition-ease);
 }
 
 .link:hover {
-  border-bottom-color: var(--mp-secondary);
+  border-bottom-color: var(--mp-primary);
 }
 
 /* Strikethrough */
@@ -344,7 +344,7 @@
 
 .em {
   font-style: italic;
-  color: var(--mp-secondary);
+  color: var(--mp-primary);
 }
 
 /* Horizontal rule */

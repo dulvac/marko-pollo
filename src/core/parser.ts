@@ -31,7 +31,7 @@ const DANGEROUS_KEYS = ['__proto__', 'constructor', 'prototype']
  * 3+ of the same character (-, *, _), optionally with spaces between,
  * and nothing else on the line.
  */
-const THEMATIC_BREAK_LINE = /^\s*(?:(-\s*){3,}|(\*\s*){3,}|(_\s*){3,})\s*$/
+export const THEMATIC_BREAK_LINE = /^\s*(?:(-\s*){3,}|(\*\s*){3,}|(_\s*){3,})\s*$/
 
 const COMMENT_DIRECTIVE_PATTERN = /^<!--\s*(\w+)\s*:\s*(.+?)\s*-->$/
 
@@ -129,6 +129,66 @@ function splitSlides(body: string): string[] {
   chunks.push(currentLines.join('\n'))
 
   return chunks
+}
+
+/**
+ * Given a markdown string, find the character offset where the given slide
+ * section (0-indexed) begins, after the frontmatter.
+ */
+export function findSlideOffset(text: string, slideIndex: number): number {
+  // Skip frontmatter
+  let bodyStart = 0
+  const fmMatch = text.match(/^---\n[\s\S]*?\n---\n/)
+  if (fmMatch) {
+    bodyStart = fmMatch[0].length
+  }
+
+  if (slideIndex <= 0) return bodyStart
+
+  const body = text.slice(bodyStart)
+  const lines = body.split('\n')
+  let slideCount = 0
+  let offset = bodyStart
+
+  for (const line of lines) {
+    if (THEMATIC_BREAK_LINE.test(line)) {
+      slideCount++
+      if (slideCount === slideIndex) {
+        // Return the position right after this separator line
+        return offset + line.length + 1
+      }
+    }
+    offset += line.length + 1
+  }
+
+  return bodyStart
+}
+
+/**
+ * Given a markdown string and a cursor position, determine which slide
+ * section (0-indexed) the cursor is in.
+ */
+export function getSlideIndexAtPosition(text: string, pos: number): number {
+  // Skip frontmatter
+  let bodyStart = 0
+  const fmMatch = text.match(/^---\n[\s\S]*?\n---\n/)
+  if (fmMatch) {
+    bodyStart = fmMatch[0].length
+  }
+
+  if (pos < bodyStart) return 0
+
+  const body = text.slice(bodyStart, pos)
+  const lines = body.split('\n')
+  let slideIndex = 0
+
+  for (const line of lines) {
+    if (THEMATIC_BREAK_LINE.test(line)) {
+      slideIndex++
+    }
+  }
+
+  return slideIndex
 }
 
 export function parseMarkdown(markdown: string): ParseResult {

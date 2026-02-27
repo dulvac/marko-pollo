@@ -1,6 +1,7 @@
 import { useCallback, useState, useEffect, useRef } from 'react'
 import { useSlides, useSlideDispatch } from '../core/store'
 import { useRoute } from '../core/route'
+import { useEditorSaveShortcut } from '../hooks'
 import { MarkdownEditor } from '../components/MarkdownEditor'
 import { SlideFrame } from '../components/SlideFrame'
 import { SlideRenderer } from '../components/SlideRenderer'
@@ -168,6 +169,9 @@ export function EditorView() {
       setSaveStatus('error')
     }
   }, [environment, currentDeck, localMarkdown, deckMetadata?.title])
+
+  // Bind Ctrl+S / Cmd+S to environment-aware save (not export)
+  useEditorSaveShortcut(handleSave)
 
   const handleAuthorize = useCallback(
     (token: string, storage: 'session' | 'local') => {

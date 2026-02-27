@@ -289,9 +289,9 @@ Born from the button contrast bug, Eliza created a reusable `/visual-qa` skill:
 
 The workflow evolved through three stages:
 
-1. **Manual requests** — user describes work in natural language
-2. **Team dispatch** — lead spawns specialists for each task
-3. **Issue-driven automation** — GitHub Issues become the source of truth
+1. **Manual requests** — "add feature X" described in chat
+2. **Team dispatch** — lead spawns specialists per task
+3. **Issue-driven automation** — `/issue-swarm` reads GitHub Issues, spawns parallel teams, opens PRs that auto-close issues on merge
 
 > Issues aren't just tracking — they're the **input format** for autonomous development.
 
@@ -299,127 +299,127 @@ The workflow evolved through three stages:
 
 ## Issue-Driven Development
 
-Labels map directly to branch conventions and team composition:
+Labels map directly to branch conventions — no human decides the branch name:
 
 ```mermaid
 flowchart LR
-    I[GitHub Issue] -->|label: bug| F1[fix/N-description]
-    I -->|label: enhancement| F2[feature/N-description]
-    I -->|label: documentation| F3[docs/N-description]
-
-    F1 --> PR1[Pull Request]
-    F2 --> PR2[Pull Request]
-    F3 --> PR3[Pull Request]
-
-    PR1 -->|Closes #N| M[Merged to master]
-    PR2 -->|Closes #N| M
-    PR3 -->|Closes #N| M
+    I["Issue #7: Overview click bug"] -->|"label: bug"| B["fix/7-overview-slide-click-navigation"]
+    B --> PR["PR #13"]
+    PR -->|"Closes #7"| M[Merged to master]
 ```
 
-**Concrete example:**
+**Real mapping from the swarm session:**
 
-Issue **#7** "Overview click bug" :arrow_right: label `bug` :arrow_right: branch `fix/7-overview-slide-click-navigation` :arrow_right: PR with `Closes #7` :arrow_right: merged, issue auto-closed.
+| Issue | Label | Branch | PR |
+|-------|-------|--------|----|
+| #5 | `bug` | `fix/5-editor-mode-vertical-scroll` | #14 |
+| #6 | `bug` | `fix/6-green-text-contrast` | #10 |
+| #7 | `bug` | `fix/7-overview-slide-click-navigation` | #13 |
+| #8 | `bug` | `fix/8-cancel-export-button` | #12 |
 
-No human decides the branch name. No human writes the PR body. The **issue metadata drives the entire pipeline**.
+The **issue metadata drives the entire pipeline** — label determines prefix, number goes in the branch, PR body includes `Closes #N`.
 
 ---
 
 ## The Issue Swarm
 
-`/issue-swarm` takes issue-driven development to its logical extreme — **one full team per issue, all running in parallel**.
+`/issue-swarm` dispatched **5 parallel team leads** — 4 bugs + 1 slides task — each in an isolated git worktree.
 
 ```mermaid
 flowchart TD
-    CMD["/issue-swarm"] --> FETCH[Fetch open issues]
-    FETCH --> S1[Spawn Team: Issue #7]
-    FETCH --> S2[Spawn Team: Issue #12]
-    FETCH --> S3[Spawn Team: Issue #15]
-    FETCH --> S4[Spawn Team: Issue #18]
+    CMD["/issue-swarm bug"] --> FETCH["4 open issues, all labeled bug"]
+    FETCH --> S1["Lead 1: Issue #5 (Editor bugs)"]
+    FETCH --> S2["Lead 2: Issue #6 (Contrast)"]
+    FETCH --> S3["Lead 3: Issue #7 (Overview nav)"]
+    FETCH --> S4["Lead 4: Issue #8 (Export cancel)"]
+    FETCH --> S5["Lead 5: Slides task"]
 
-    S1 --> W1[Worktree #1]
-    S2 --> W2[Worktree #2]
-    S3 --> W3[Worktree #3]
-    S4 --> W4[Worktree #4]
-
-    W1 --> L1[Lead] --> R1[Rex] & A1[Ada] & Sa1[Sage] & T1[Turing]
-    W2 --> L2[Lead] --> R2[Rex] & A2[Ada] & Sa2[Sage] & T2[Turing]
-    W3 --> L3[Lead] --> R3[Rex] & A3[Ada] & Sa3[Sage] & T3[Turing]
-    W4 --> L4[Lead] --> R4[Rex] & A4[Ada] & Sa4[Sage] & T4[Turing]
+    S1 --> W1["Worktree 1"] --> PR1["PR #14"]
+    S2 --> W2["Worktree 2"] --> PR2["PR #10"]
+    S3 --> W3["Worktree 3"] --> PR3["PR #13"]
+    S4 --> W4["Worktree 4"] --> PR4["PR #12"]
+    S5 --> W5["Worktree 5"] --> PR5["PR #11"]
 ```
 
-- **4 issues = 4 teams = ~20 agents** working simultaneously
-- Each team gets its own **isolated git worktree** — no merge conflicts during work
-- Each team runs the full cycle: **implement :arrow_right: review :arrow_right: test :arrow_right: commit :arrow_right: PR**
-- PRs include `Closes #N` — issues auto-close on merge
+:warning: **Plot twist:** Each team lead was instructed to delegate to sub-teams (Rex, Ada, Turing, Sage) — but **all 5 implemented solo** instead. A workflow compliance failure caught by Eliza during review.
+
+> Honest finding: even with clear rules, agents take shortcuts under parallel pressure.
 
 ---
 
-## Swarm in Action
+## Swarm Results: The Four Bugs
 
-Four bugs tackled simultaneously in a single swarm:
+| Issue | Root Cause | Fix | Tests |
+|-------|-----------|-----|-------|
+| **#5** Editor bugs (5 sub-issues) | `overflow: hidden` on `.editorWrapper`, missing CM extensions | `overflow: auto`, `lineWrapping`, `findSlideOffset()`, preview sync listener, Escape keymap | +8 new, 266 total |
+| **#6** Green text contrast | #1C6331 on #2E3B30 = 1.6:1 ratio | Replaced 6 instances of `--mp-secondary` text with `--mp-primary` (gold, ~6.5:1 WCAG AA) | 258 pass |
+| **#7** Overview click always goes to slide 1 | `route.view` in useEffect deps caused `LOAD_DECK` to re-fire, resetting `currentIndex` | Changed dependency array to `[deckId]` only | +5 new, 263 total |
+| **#8** Export downloads even on Cancel | `saveMarkdownToFile()` returned boolean — both "cancelled" and "not available" were `false` | Discriminated union: `'saved' \| 'cancelled' \| 'not-available'` | +9 new, 267 total |
 
-| Issue | Description | Team Lead | Branch | Result |
-|-------|-------------|-----------|--------|--------|
-| **#7** | Overview click navigation | Lead 1 | `fix/7-overview-click` | PR :arrow_right: merged |
-| **#12** | Editor scroll position | Lead 2 | `fix/12-editor-scroll` | PR :arrow_right: merged |
-| **#15** | Text contrast ratio | Lead 3 | `fix/15-text-contrast` | PR :arrow_right: merged |
-| **#18** | Export cancel handling | Lead 4 | `fix/18-export-cancel` | PR :arrow_right: merged |
-
-```mermaid
-sequenceDiagram
-    participant Orchestrator
-    participant Team1
-    participant Team2
-    participant Team3
-    participant Team4
-
-    Orchestrator->>Team1: Issue #7 (worktree)
-    Orchestrator->>Team2: Issue #12 (worktree)
-    Orchestrator->>Team3: Issue #15 (worktree)
-    Orchestrator->>Team4: Issue #18 (worktree)
-
-    par All teams in parallel
-        Team1->>Team1: implement → review → test
-        Team2->>Team2: implement → review → test
-        Team3->>Team3: implement → review → test
-        Team4->>Team4: implement → review → test
-    end
-
-    Team1->>Orchestrator: PR (Closes #7)
-    Team2->>Orchestrator: PR (Closes #12)
-    Team3->>Orchestrator: PR (Closes #15)
-    Team4->>Orchestrator: PR (Closes #18)
-```
-
-**Four bugs. Four PRs. Zero human code.**
+**4 bugs. 5 PRs. 30+ new tests. Zero human code.**
 
 ---
 
-## From Issue to PR: Zero Human Code
+## The Review Gauntlet
 
-The complete automated pipeline — from problem description to merged solution:
+After implementation, a **full 5-agent review** ran across all PRs:
 
 ```mermaid
 flowchart LR
-    U[User writes issue] --> S["/issue-swarm"]
-    S --> L[Lead reads issue]
-    L --> R[Rex implements via TDD]
-    R --> Rev[Ada + Sage review]
-    Rev --> Fix[Rex fixes findings]
-    Fix --> V[Turing verifies]
-    V --> PR["PR with Closes #N"]
-    PR --> Merge[Merge → issue closed]
+    PR["5 PRs"] --> IR["Individual Reviews"]
+    IR --> Ada["Ada: Architecture"]
+    IR --> Rex["Rex: Frontend"]
+    IR --> Sage["Sage: Security"]
+    IR --> Turing["Turing: QA"]
+    IR --> Eliza["Eliza: AI Workflow"]
+
+    Ada -->|"All 5 approved, 1 MEDIUM"| V[Verdict]
+    Rex -->|"All 5 approved, 5 LOW"| V
+    Sage -->|"Zero vulnerabilities"| V
+    Turing -->|"4 approved, 1 BLOCKED"| V
+    Eliza -->|"Workflow compliance flag"| V
 ```
 
-**What each agent contributes:**
+:rotating_light: **Turing caught 4 failing E2E tests** in PR #12 — `showSaveFilePicker` opens an OS dialog that Playwright cannot dismiss. PR blocked until fix applied.
 
-- **Lead** — reads the issue, plans the work, coordinates the team
-- **Rex** — writes tests first, then implementation (TDD)
-- **Ada** — reviews architecture, catches complexity debt
-- **Sage** — reviews security, validates input handling
-- **Turing** — runs full test suite, visual QA, build verification
+**Ada** flagged duplicated regex in PR #14. **Eliza** flagged the solo-implementation workflow violation and a stale `CLAUDE.md` reference.
 
-The human's only job: **describe the problem**. Everything else is automated.
+> ~20 agents total: 5 team leads + 5 individual reviewers + 5 team reviewers + orchestrator.
+
+---
+
+## From Issue to Merge: The Real Pipeline
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Swarm as /issue-swarm
+    participant Lead
+    participant Solo as Lead (solo)
+    participant Review as 5-Agent Review
+
+    User->>Swarm: /issue-swarm bug
+    Swarm->>Lead: Spawn 5 leads in worktrees
+    Lead->>Solo: Implement (should have delegated!)
+    Solo->>Solo: Write tests + fix + commit
+    Solo->>Swarm: PR with Closes #N
+
+    Swarm->>Review: Dispatch full team review
+    Review->>Review: Ada + Rex + Sage + Turing + Eliza
+    Review-->>Swarm: 4 approved, 1 blocked (E2E)
+
+    Note over Swarm: Turing catches E2E regression in PR #12
+    Swarm->>Solo: Fix E2E tests (parallel)
+```
+
+**Key metrics from this session:**
+
+- :white_check_mark: 4 bugs fixed simultaneously
+- :white_check_mark: 5 PRs created
+- :white_check_mark: 30+ new tests added
+- :white_check_mark: 0 security vulnerabilities (Sage)
+- :rotating_light: 1 E2E regression caught by Turing (fixed in parallel)
+- :warning: 5/5 team leads went solo — workflow compliance: **FAIL**
 
 ---
 
@@ -433,6 +433,7 @@ The human's only job: **describe the problem**. Everything else is automated.
 4. **Visual QA is not optional** — passing tests :noteq: correct UI
 5. **Problems become process** — every bug is a chance to create a skill
 6. **Parallel teams scale** — issue swarms tackle backlogs in minutes, not days
+7. **Report honestly** — every team lead went solo; that's a real finding, not a failure to hide
 
 ---
 

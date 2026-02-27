@@ -78,4 +78,74 @@ describe('useDeckLoader', () => {
     expect(loadDeck).toHaveBeenCalledWith('test')
     expect(dispatch).toHaveBeenCalledWith({ type: 'LOAD_DECK', deckId: 'test', markdown: '# Overview Slide' })
   })
+
+  it('does not re-dispatch LOAD_DECK when switching from overview to presentation for the same deck', async () => {
+    const { loadDeck } = await import('../core/loader')
+    vi.mocked(loadDeck).mockReturnValue('# Slide Content')
+
+    // Start in overview view
+    const initialRoute: Route = { view: 'overview', deckId: 'test' }
+    const { rerender } = renderHook<void, { route: Route }>(
+      ({ route }) => useDeckLoader(route, setRoute, dispatch),
+      { initialProps: { route: initialRoute } }
+    )
+
+    // LOAD_DECK dispatched once on initial render
+    expect(dispatch).toHaveBeenCalledTimes(1)
+    expect(dispatch).toHaveBeenCalledWith({ type: 'LOAD_DECK', deckId: 'test', markdown: '# Slide Content' })
+
+    vi.clearAllMocks()
+
+    // Switch to presentation view for the same deck
+    const newRoute: Route = { view: 'presentation', deckId: 'test', slideIndex: 2 }
+    rerender({ route: newRoute })
+
+    // LOAD_DECK should NOT be dispatched again because deckId has not changed
+    expect(dispatch).not.toHaveBeenCalled()
+    expect(loadDeck).not.toHaveBeenCalled()
+  })
+
+  it('does not re-dispatch LOAD_DECK when switching from editor to presentation for the same deck', async () => {
+    const { loadDeck } = await import('../core/loader')
+    vi.mocked(loadDeck).mockReturnValue('# Slide Content')
+
+    // Start in editor view
+    const initialRoute: Route = { view: 'editor', deckId: 'test' }
+    const { rerender } = renderHook<void, { route: Route }>(
+      ({ route }) => useDeckLoader(route, setRoute, dispatch),
+      { initialProps: { route: initialRoute } }
+    )
+
+    expect(dispatch).toHaveBeenCalledTimes(1)
+    vi.clearAllMocks()
+
+    // Switch to presentation view for the same deck
+    const newRoute: Route = { view: 'presentation', deckId: 'test', slideIndex: 0 }
+    rerender({ route: newRoute })
+
+    // LOAD_DECK should NOT be dispatched again
+    expect(dispatch).not.toHaveBeenCalled()
+  })
+
+  it('dispatches LOAD_DECK when deckId actually changes', async () => {
+    const { loadDeck } = await import('../core/loader')
+    vi.mocked(loadDeck).mockReturnValue('# Deck A')
+
+    const initialRoute: Route = { view: 'presentation', deckId: 'deck-a', slideIndex: 0 }
+    const { rerender } = renderHook<void, { route: Route }>(
+      ({ route }) => useDeckLoader(route, setRoute, dispatch),
+      { initialProps: { route: initialRoute } }
+    )
+
+    expect(dispatch).toHaveBeenCalledWith({ type: 'LOAD_DECK', deckId: 'deck-a', markdown: '# Deck A' })
+    vi.clearAllMocks()
+
+    // Switch to a different deck
+    vi.mocked(loadDeck).mockReturnValue('# Deck B')
+    const newRoute: Route = { view: 'presentation', deckId: 'deck-b', slideIndex: 0 }
+    rerender({ route: newRoute })
+
+    // LOAD_DECK should be dispatched for the new deck
+    expect(dispatch).toHaveBeenCalledWith({ type: 'LOAD_DECK', deckId: 'deck-b', markdown: '# Deck B' })
+  })
 })

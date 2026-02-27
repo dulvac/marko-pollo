@@ -17,14 +17,18 @@ export function useDeckLoader(
     migrateOldStorage()
   }, [])
 
-  // Load deck when route.deckId changes
+  // Load deck when deckId changes (or when navigating to/from picker).
+  // We intentionally exclude route.view so that switching between
+  // presentation / editor / overview for the *same* deck does NOT
+  // re-dispatch LOAD_DECK (which resets currentIndex to 0).
+  const deckId = route.view === 'picker' ? null : route.deckId
+
   useEffect(() => {
-    if (route.view === 'picker') {
+    if (deckId === null) {
       dispatch({ type: 'UNLOAD_DECK' })
       return
     }
 
-    const deckId = route.deckId
     const markdown = loadDeck(deckId)
 
     if (markdown) {
@@ -34,5 +38,5 @@ export function useDeckLoader(
       setRoute({ view: 'picker' })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [route.view === 'picker' ? null : route.deckId, route.view])
+  }, [deckId])
 }

@@ -151,6 +151,69 @@ describe('OverviewGrid', () => {
     expect(screen.getByText('2')).toBeInTheDocument()
   })
 
+  it('calls onSelectSlide with correct index for each slide when clicked', () => {
+    const state: SlideState = {
+      rawMarkdown: '# Slide 1\n---\n# Slide 2\n---\n# Slide 3\n---\n# Slide 4',
+      slides: [
+        { metadata: {}, rawContent: '# Slide 1' },
+        { metadata: {}, rawContent: '# Slide 2' },
+        { metadata: {}, rawContent: '# Slide 3' },
+        { metadata: {}, rawContent: '# Slide 4' },
+      ],
+      deckMetadata: {},
+      currentIndex: 0,
+      currentDeck: null,
+    }
+
+    const onSelectSlide = vi.fn()
+    const { container } = renderWithContext(
+      <OverviewGrid onSelectSlide={onSelectSlide} />,
+      state
+    )
+
+    const grid = container.querySelector('[class*="grid"]')
+    const thumbnails = Array.from(grid?.children || [])
+
+    // Click each thumbnail and verify it passes the correct 0-based index
+    thumbnails.forEach((thumb, i) => {
+      fireEvent.click(thumb as Element)
+      expect(onSelectSlide).toHaveBeenLastCalledWith(i)
+    })
+
+    expect(onSelectSlide).toHaveBeenCalledTimes(4)
+  })
+
+  it('calls onSelectSlide with correct index on Enter/Space key', () => {
+    const state: SlideState = {
+      rawMarkdown: '# Slide 1\n---\n# Slide 2\n---\n# Slide 3',
+      slides: [
+        { metadata: {}, rawContent: '# Slide 1' },
+        { metadata: {}, rawContent: '# Slide 2' },
+        { metadata: {}, rawContent: '# Slide 3' },
+      ],
+      deckMetadata: {},
+      currentIndex: 0,
+      currentDeck: null,
+    }
+
+    const onSelectSlide = vi.fn()
+    const { container } = renderWithContext(
+      <OverviewGrid onSelectSlide={onSelectSlide} />,
+      state
+    )
+
+    const grid = container.querySelector('[class*="grid"]')
+    const thumbnails = Array.from(grid?.children || [])
+
+    // Press Enter on the third slide (index 2)
+    fireEvent.keyDown(thumbnails[2] as Element, { key: 'Enter' })
+    expect(onSelectSlide).toHaveBeenLastCalledWith(2)
+
+    // Press Space on the second slide (index 1)
+    fireEvent.keyDown(thumbnails[1] as Element, { key: ' ' })
+    expect(onSelectSlide).toHaveBeenLastCalledWith(1)
+  })
+
   it('renders empty grid when no slides', () => {
     const state: SlideState = {
       rawMarkdown: '',

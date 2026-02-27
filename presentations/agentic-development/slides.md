@@ -126,14 +126,17 @@ sequenceDiagram
     participant Lead
     participant Rex
     participant Ada
+    participant Sage
     participant Turing
 
     User->>Lead: "Add feature X"
     Lead->>Rex: Implement (TDD)
     Rex->>Lead: Done — tests pass
     Lead->>Ada: Architecture review
+    Lead->>Sage: Security review
     Ada->>Lead: 3 findings (1 HIGH)
-    Lead->>Rex: Fix HIGH finding
+    Sage->>Lead: 1 finding (MEDIUM)
+    Lead->>Rex: Fix findings
     Rex->>Lead: Fixed — tests pass
     Lead->>Turing: Full verification
     Turing->>Lead: All checks green
@@ -155,11 +158,9 @@ For multiple issues, the system spawns **one full team per issue**, each in an i
 flowchart TD
     O[Orchestrator] -->|worktree| T1[Lead: Issue 42]
     O -->|worktree| T2[Lead: Issue 15]
-    O -->|worktree| T3[Lead: Issue 7]
 
-    T1 --> R1[Rex] & A1[Ada] & Tu1[Turing]
-    T2 --> R2[Rex] & A2[Ada] & Tu2[Turing]
-    T3 --> R3[Rex] & A3[Ada] & Tu3[Turing]
+    T1 --> R1[Rex] & A1[Ada] & S1[Sage] & Tu1[Turing]
+    T2 --> R2[Rex] & A2[Ada] & S2[Sage] & Tu2[Turing]
 ```
 
 - Each team creates its own **branch**, implements, reviews, and opens a **PR**

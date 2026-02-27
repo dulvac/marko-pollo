@@ -15,7 +15,7 @@ Dekk is a static single-page web application for presenting markdown-authored sl
 ## Technology Stack
 
 - **Build:** Vite 6 + React 19 + TypeScript
-- **Markdown:** unified/remark/rehype pipeline with custom remark-slides plugin
+- **Markdown:** Custom slide parser (thematic-break splitting + frontmatter extraction) with react-markdown rendering (remark-gfm, remark-emoji, rehype-sanitize)
 - **Rendering:** react-markdown with custom component mappings
 - **Code Highlighting:** Shiki with @shikijs/transformers (diff, focus, highlight)
 - **Diagrams:** Mermaid.js v11 (client-side, lazy)

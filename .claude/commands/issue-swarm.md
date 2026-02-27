@@ -155,8 +155,15 @@ Then clean up the team with `TeamDelete`.
 - The PR body MUST include `Closes #{number}` to auto-close the issue on merge
 - Follow conventional commits for all commit messages
 - Do NOT modify files unrelated to this issue
-- You are a team lead — coordinate and review, do NOT write implementation code yourself
-- If the issue is unclear or too large, implement what you can and note limitations in the PR description
+- You are a team lead — coordinate, don't implement
+
+**ABSOLUTE RULE: You MUST dispatch Rex for ALL implementation work.** You are NOT allowed to use Edit, Write, or Bash to modify source code yourself. Your only tools for code changes are dispatching agents.
+
+- For small fixes (< 10 lines, pure CSS): Dispatch Rex alone, skip review agents
+- For medium fixes: Dispatch Rex, then Ada for review, then Turing to verify
+- For complex fixes: Dispatch Rex, then Ada + Sage in parallel, then Turing
+- You may read files, run git commands, and create PRs — but NEVER write implementation code
+- If the issue is unclear or too large, break it into sub-tasks and dispatch Rex for each one. Note any remaining scope in the PR description
 ```
 
 ## Phase 4 — Monitor & Collect

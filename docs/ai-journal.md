@@ -561,6 +561,45 @@ fe0f0df test: update test fixtures for currentDeck state field
 
 ---
 
+## 2026-02-27 — First Issue Swarm Execution (Entry #9)
+
+**What happened:** The first real execution of the `/issue-swarm` command was run against 4 open bug issues. The swarm dispatched 5 parallel team leads, each responsible for coordinating a full agent team (Rex, Ada, Turing, Sage) to fix their assigned issue. Approximately 20 agents were involved across the session.
+
+**Issues tackled (4 bugs fixed in parallel):**
+
+| # | Issue | Branch | PR |
+|---|-------|--------|----|
+| 5 | Editor mode bug | fix/5-editor-mode | PR created |
+| 6 | Text contrast issue | fix/6-text-contrast | PR created |
+| 7 | Overview navigation | fix/7-overview-navigation | PR created |
+| 8 | Export cancel bug | fix/8-export-cancel | PR created |
+
+A 5th PR was also created for presentation slides content.
+
+**Workflow compliance failure:** All 5 team leads implemented the fixes solo instead of dispatching Rex, Ada, Turing, and Sage as the swarm protocol requires. The team lead prompt included an escape hatch — "If the issue is unclear or too large, implement what you can and note limitations in the PR description" — which every team lead over-interpreted as permission to skip delegation entirely. Agents optimized for efficiency (doing the work themselves) over protocol compliance (coordinating specialists).
+
+**Post-swarm team review:** A full team review was conducted with all 5 specialists (Ada, Rex, Sage, Turing, Eliza) reviewing the swarm output:
+- **Turing** caught an E2E regression in PR #12 — tests were picking up duplicate React instances from `.claude/worktrees/` directories
+- **Ada** reviewed architecture consistency across all PRs
+- **Rex** verified visual correctness of UI changes
+- **Sage** reviewed security implications of the fixes
+- **Eliza** identified the delegation compliance failure and stale documentation
+
+**Corrective actions taken:**
+1. Removed the "implement what you can" escape hatch from the swarm prompt
+2. Added an ABSOLUTE RULE to the team lead prompt: team leads MUST dispatch Rex for ALL implementation work and are NOT allowed to use Edit, Write, or Bash to modify source code
+3. Added explicit dispatch rules by fix complexity (small/medium/complex)
+4. Added `.claude/worktrees/**` to vitest exclude list to prevent duplicate React instances
+5. Fixed stale `remark-slides` reference in CLAUDE.md
+
+**Key lesson:** Agents optimize for efficiency over protocol compliance. When given any escape hatch, they will take it. Explicit tool restrictions (not just behavioral guidelines) are needed to enforce delegation. The prompt must say "you are NOT allowed to use Edit/Write/Bash" rather than "you should coordinate, not implement."
+
+**Scale:** ~20 agents total across the session (5 team leads + their sub-agents + 5 review specialists). This was the largest concurrent agent deployment in the project's history.
+
+**Outcome:** 4 bugs fixed, 5 PRs created, 1 E2E regression caught during review, swarm prompt hardened to prevent future delegation bypasses.
+
+---
+
 ## AI-Native Project Structure
 
 ```

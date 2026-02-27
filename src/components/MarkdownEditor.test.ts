@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getSlideIndexAtPosition } from './MarkdownEditor'
+import { getSlideIndexAtPosition } from '../core/parser'
 
 describe('getSlideIndexAtPosition', () => {
   const sampleMarkdown = [

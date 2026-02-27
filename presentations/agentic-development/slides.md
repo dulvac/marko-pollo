@@ -440,6 +440,71 @@ sequenceDiagram
 <!-- bg: #1a1a2e -->
 <!-- layout: center -->
 
+## Next Steps: Closing the Loop
+
+The system works — but it still needs a human to type `/issue-swarm`.
+
+**What if GitHub Issues triggered the pipeline automatically?**
+
+---
+
+## The Vision: CI-Driven Issue Resolution
+
+```mermaid
+flowchart LR
+    I[GitHub Issue] -->|"auto-fix label"| GH[GitHub Actions]
+    GH -->|"triggers"| CC[Claude Code Action]
+    CC -->|"reads"| CM[CLAUDE.md + agents]
+    CC -->|"creates"| BR[Branch + Code]
+    BR -->|"opens"| PR[Pull Request]
+    PR -->|"triggers"| RV[5-Agent Review]
+    RV -->|"human approves"| MG[Merge]
+```
+
+**Issues become the input format. PRs become the output. Humans only review and merge.**
+
+---
+
+## The Milestone: 6 Phases
+
+| Phase | What | Key Deliverable |
+|-------|------|-----------------|
+| **1. Foundation** | `@claude` mentions in issues/PRs | Basic Claude Code GitHub Action |
+| **2. Auto-Implement** | Label triggers implementation | `auto-fix` label :arrow_right: branch + PR |
+| **3. Auto-Review** | Multi-perspective review | Ada/Rex/Sage/Turing/Eliza checks |
+| **4. Orchestration** | Parallel issue processing | Concurrency controls + conflict detection |
+| **5. Safeguards** | Production-grade governance | Cost caps, security boundaries, audit trail |
+| **6. Feedback Loop** | Self-improving pipeline | Metrics, CI retry with context, prompt tuning |
+
+Phases 1-3 = **minimum viable pipeline.** Phases 4-6 = production hardening.
+
+---
+
+## From Manual to Autonomous
+
+```mermaid
+flowchart TD
+    subgraph Today["Today: Manual"]
+        U1[Human] -->|"types /issue-swarm"| C1[Claude Code CLI]
+        C1 -->|"agents in worktrees"| P1[PRs Created]
+    end
+
+    subgraph Tomorrow["Tomorrow: Automated"]
+        I2[Issue Created] -->|"label: auto-fix"| G2[GitHub Actions]
+        G2 -->|"claude-code-action"| C2[Claude Code]
+        C2 -->|"implement + review"| P2[PR Ready for Merge]
+    end
+
+    Today -.->|"same team, no human trigger"| Tomorrow
+```
+
+> The difference is one label instead of one command. The agent team, the standards, and the review process stay the same.
+
+---
+
+<!-- bg: #1a1a2e -->
+<!-- layout: center -->
+
 ## Thank You
 
 :globe_with_meridians: Built with **Dekk** — a slide deck app built by its own agent team

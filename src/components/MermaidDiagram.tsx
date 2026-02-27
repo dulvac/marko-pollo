@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useId } from 'react'
+import { BRAND, MERMAID_DERIVED } from '../core/brand-colors'
 import styles from '../styles/slides.module.css'
 
 let mermaidPromise: Promise<typeof import('mermaid').default> | null = null
@@ -11,17 +12,17 @@ function initMermaid() {
         securityLevel: 'strict',
         theme: 'base',
         themeVariables: {
-          primaryColor: '#3D3425',
-          primaryTextColor: '#F0E8D8',
-          primaryBorderColor: '#E4C56C',
-          lineColor: '#8A7D5A',
-          secondaryColor: '#0C4A23',
-          secondaryBorderColor: '#1C6331',
-          tertiaryColor: '#263029',
-          background: '#2E3B30',
-          mainBkg: '#352F2A',
-          nodeBorder: '#E4C56C',
-          textColor: '#F0E8D8',
+          primaryColor: MERMAID_DERIVED.primaryColor,
+          primaryTextColor: BRAND.text,
+          primaryBorderColor: BRAND.primary,
+          lineColor: BRAND.muted,
+          secondaryColor: MERMAID_DERIVED.secondaryColor,
+          secondaryBorderColor: BRAND.secondary,
+          tertiaryColor: MERMAID_DERIVED.tertiaryColor,
+          background: BRAND.surface,
+          mainBkg: MERMAID_DERIVED.mainBkg,
+          nodeBorder: BRAND.primary,
+          textColor: BRAND.text,
           fontSize: '16px',
           fontFamily: 'Inter, system-ui, sans-serif',
         },

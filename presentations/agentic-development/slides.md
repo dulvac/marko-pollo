@@ -282,6 +282,147 @@ Born from the button contrast bug, Eliza created a reusable `/visual-qa` skill:
 
 ---
 
+<!-- bg: #1a1a2e -->
+<!-- layout: center -->
+
+## GitHub Issues: Closing the Loop
+
+The workflow evolved through three stages:
+
+1. **Manual requests** — user describes work in natural language
+2. **Team dispatch** — lead spawns specialists for each task
+3. **Issue-driven automation** — GitHub Issues become the source of truth
+
+> Issues aren't just tracking — they're the **input format** for autonomous development.
+
+---
+
+## Issue-Driven Development
+
+Labels map directly to branch conventions and team composition:
+
+```mermaid
+flowchart LR
+    I[GitHub Issue] -->|label: bug| F1[fix/N-description]
+    I -->|label: enhancement| F2[feature/N-description]
+    I -->|label: documentation| F3[docs/N-description]
+
+    F1 --> PR1[Pull Request]
+    F2 --> PR2[Pull Request]
+    F3 --> PR3[Pull Request]
+
+    PR1 -->|Closes #N| M[Merged to master]
+    PR2 -->|Closes #N| M
+    PR3 -->|Closes #N| M
+```
+
+**Concrete example:**
+
+Issue **#7** "Overview click bug" :arrow_right: label `bug` :arrow_right: branch `fix/7-overview-slide-click-navigation` :arrow_right: PR with `Closes #7` :arrow_right: merged, issue auto-closed.
+
+No human decides the branch name. No human writes the PR body. The **issue metadata drives the entire pipeline**.
+
+---
+
+## The Issue Swarm
+
+`/issue-swarm` takes issue-driven development to its logical extreme — **one full team per issue, all running in parallel**.
+
+```mermaid
+flowchart TD
+    CMD["/issue-swarm"] --> FETCH[Fetch open issues]
+    FETCH --> S1[Spawn Team: Issue #7]
+    FETCH --> S2[Spawn Team: Issue #12]
+    FETCH --> S3[Spawn Team: Issue #15]
+    FETCH --> S4[Spawn Team: Issue #18]
+
+    S1 --> W1[Worktree #1]
+    S2 --> W2[Worktree #2]
+    S3 --> W3[Worktree #3]
+    S4 --> W4[Worktree #4]
+
+    W1 --> L1[Lead] --> R1[Rex] & A1[Ada] & Sa1[Sage] & T1[Turing]
+    W2 --> L2[Lead] --> R2[Rex] & A2[Ada] & Sa2[Sage] & T2[Turing]
+    W3 --> L3[Lead] --> R3[Rex] & A3[Ada] & Sa3[Sage] & T3[Turing]
+    W4 --> L4[Lead] --> R4[Rex] & A4[Ada] & Sa4[Sage] & T4[Turing]
+```
+
+- **4 issues = 4 teams = ~20 agents** working simultaneously
+- Each team gets its own **isolated git worktree** — no merge conflicts during work
+- Each team runs the full cycle: **implement :arrow_right: review :arrow_right: test :arrow_right: commit :arrow_right: PR**
+- PRs include `Closes #N` — issues auto-close on merge
+
+---
+
+## Swarm in Action
+
+Four bugs tackled simultaneously in a single swarm:
+
+| Issue | Description | Team Lead | Branch | Result |
+|-------|-------------|-----------|--------|--------|
+| **#7** | Overview click navigation | Lead 1 | `fix/7-overview-click` | PR :arrow_right: merged |
+| **#12** | Editor scroll position | Lead 2 | `fix/12-editor-scroll` | PR :arrow_right: merged |
+| **#15** | Text contrast ratio | Lead 3 | `fix/15-text-contrast` | PR :arrow_right: merged |
+| **#18** | Export cancel handling | Lead 4 | `fix/18-export-cancel` | PR :arrow_right: merged |
+
+```mermaid
+sequenceDiagram
+    participant Orchestrator
+    participant Team1
+    participant Team2
+    participant Team3
+    participant Team4
+
+    Orchestrator->>Team1: Issue #7 (worktree)
+    Orchestrator->>Team2: Issue #12 (worktree)
+    Orchestrator->>Team3: Issue #15 (worktree)
+    Orchestrator->>Team4: Issue #18 (worktree)
+
+    par All teams in parallel
+        Team1->>Team1: implement → review → test
+        Team2->>Team2: implement → review → test
+        Team3->>Team3: implement → review → test
+        Team4->>Team4: implement → review → test
+    end
+
+    Team1->>Orchestrator: PR (Closes #7)
+    Team2->>Orchestrator: PR (Closes #12)
+    Team3->>Orchestrator: PR (Closes #15)
+    Team4->>Orchestrator: PR (Closes #18)
+```
+
+**Four bugs. Four PRs. Zero human code.**
+
+---
+
+## From Issue to PR: Zero Human Code
+
+The complete automated pipeline — from problem description to merged solution:
+
+```mermaid
+flowchart LR
+    U[User writes issue] --> S["/issue-swarm"]
+    S --> L[Lead reads issue]
+    L --> R[Rex implements via TDD]
+    R --> Rev[Ada + Sage review]
+    Rev --> Fix[Rex fixes findings]
+    Fix --> V[Turing verifies]
+    V --> PR["PR with Closes #N"]
+    PR --> Merge[Merge → issue closed]
+```
+
+**What each agent contributes:**
+
+- **Lead** — reads the issue, plans the work, coordinates the team
+- **Rex** — writes tests first, then implementation (TDD)
+- **Ada** — reviews architecture, catches complexity debt
+- **Sage** — reviews security, validates input handling
+- **Turing** — runs full test suite, visual QA, build verification
+
+The human's only job: **describe the problem**. Everything else is automated.
+
+---
+
 ## Key Takeaways
 
 > **Agents aren't just faster developers — they're a system that improves itself.**

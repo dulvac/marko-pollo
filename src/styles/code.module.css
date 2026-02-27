@@ -44,7 +44,7 @@
   background-color: var(--mp-code-bg);
   padding: 2px 8px;
   border-radius: 4px;
-  color: var(--mp-secondary);
+  color: var(--mp-primary);
 }
 
 /* Shiki transformer styles */
